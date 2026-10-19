@@ -2,7 +2,7 @@
 
 English | [中文](README.zh-CN.md)
 
-PeerHarbor is a lightweight, fully open-source WireGuard web admin panel. Give an
+PeerHarbor is a lightweight, self-hosted WireGuard web admin panel. Give an
 AI assistant one sentence with your server address, let it prepare the install
 commands, then manage WireGuard devices from a browser.
 
@@ -12,7 +12,7 @@ commands, then manage WireGuard devices from a browser.
 
 - AI one-sentence setup: ask AI to configure PeerHarbor for your server.
 - AI-assisted one-command install with `deploy/bootstrap.sh`.
-- Fully open-source and self-hosted.
+- Source available under the [WH Covenant Public License](LICENSE).
 - Lightweight Python/Flask web admin console.
 - WireGuard protocol underneath, compatible with standard WireGuard clients.
 - Add devices, scan QR codes, download `.conf` files, pause peers, grant admin
