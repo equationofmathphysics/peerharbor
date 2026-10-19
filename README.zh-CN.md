@@ -143,4 +143,4 @@ sudo systemctl restart longtail-web
 
 ## 许可证
 
-本项目自有代码沿用仓库现有的 [WH Covenant Public License](LICENSE)。第三方组件保留各自许可证，详见 [RemoteDesktop 第三方声明](remotedesktop/THIRD_PARTY_NOTICES.md)。
+本项目自有代码使用 [MIT 许可证](LICENSE)。第三方组件保留各自许可证，详见 [RemoteDesktop 第三方声明](remotedesktop/THIRD_PARTY_NOTICES.md)。

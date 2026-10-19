@@ -109,5 +109,5 @@ inspection reports are not distributed in this repository.
 
 ## License
 
-Project-authored code follows [LICENSE](LICENSE). Bundled noVNC and its
+Project-authored code is released under the [MIT License](LICENSE). Bundled noVNC and its
 components retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).

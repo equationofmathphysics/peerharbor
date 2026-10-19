@@ -12,7 +12,7 @@ commands, then manage WireGuard devices from a browser.
 
 - AI one-sentence setup: ask AI to configure PeerHarbor for your server.
 - AI-assisted one-command install with `deploy/bootstrap.sh`.
-- Source available under the [WH Covenant Public License](LICENSE).
+- Open source under the [MIT License](LICENSE).
 - Lightweight Python/Flask web admin console.
 - WireGuard protocol underneath, compatible with standard WireGuard clients.
 - Add devices, scan QR codes, download `.conf` files, pause peers, grant admin
@@ -116,5 +116,4 @@ Full examples are in `deploy/longtail.env.example` and `deploy/examples/`.
 
 ## License
 
-This project is released under the WH Covenant Public License. Use, copying,
-modification, distribution, and other dealings are subject to [LICENSE](LICENSE).
+Project-authored code is released under the [MIT License](LICENSE).
