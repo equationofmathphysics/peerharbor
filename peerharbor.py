@@ -33,7 +33,9 @@ def existing_vpn_config():
 def endpoint(value):
     """Accept only a host/IP and optional port, never config or shell syntax."""
     if value.startswith('['):
-        match = re.fullmatch(r'\[([^\]]+)\](?::([0-9]+))?', value)
+        # Scope IDs accepted by ipaddress can contain arbitrary text. A public
+        # server endpoint must be a literal address, never an interface scope.
+        match = re.fullmatch(r'\[([0-9A-Fa-f:.]+)\](?::([0-9]+))?', value)
         if not match:
             raise argparse.ArgumentTypeError('Use [IPv6]:port for an IPv6 endpoint.')
         host, port = match.group(1), match.group(2) or '51820'
@@ -50,6 +52,11 @@ def endpoint(value):
         labels = host.rstrip('.').split('.')
         if len(host) > 253 or not all(re.fullmatch(r'[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?', label) for label in labels):
             raise argparse.ArgumentTypeError('Use an IP address or DNS name without a URL scheme.')
+        if re.fullmatch(r'[0-9.]+', host):
+            try:
+                ipaddress.IPv4Address(host)
+            except ValueError as exc:
+                raise argparse.ArgumentTypeError('Invalid IPv4 endpoint.') from exc
     if not port.isascii() or not port.isdigit() or not 1 <= int(port) <= 65535:
         raise argparse.ArgumentTypeError('Endpoint port must be between 1 and 65535.')
     return f'{host}:{int(port)}'

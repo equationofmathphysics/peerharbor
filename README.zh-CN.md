@@ -6,7 +6,7 @@
 
 PeerHarbor 包含一个**自托管 WireGuard VPN 网页管理后台**和一个独立的 **Ubuntu/Linux Xorg 浏览器远程桌面工具**。扫码添加组网设备、管理节点和可信端口，再通过 SSH 隧道与浏览器操作远端电脑上已经打开的桌面。
 
-[安装组网后台](#安装-peerharbor) · [启动远程桌面](#启动-remotedesktop) · [与 Tailscale、NoMachine、RDP 的关系](#与-tailscalenomachinerdp-的关系)
+[快速部署与 AI 安装](#快速部署与-ai-安装) · [启动远程桌面](#启动-remotedesktop) · [与 Tailscale、NoMachine、RDP 的关系](#与-tailscalenomachinerdp-的关系)
 
 ![PeerHarbor WireGuard 管理界面：VPN 设备、节点操作与可信端口](longtail/docs/longtail-dashboard.png)
 
@@ -24,7 +24,7 @@ PeerHarbor 包含一个**自托管 WireGuard VPN 网页管理后台**和一个�
 
 ## 快速部署与 AI 安装
 
-在已有 Python 3 和 Git 的 Ubuntu/Debian 主机上：
+在已有 Python 3.10+ 和 Git 的 Ubuntu/Debian 主机上：
 
 ```bash
 git clone https://github.com/equationofmathphysics/peerharbor.git

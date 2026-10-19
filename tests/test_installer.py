@@ -19,11 +19,25 @@ class InstallerTests(unittest.TestCase):
         self.assertEqual(peerharbor.endpoint('vpn.example.com'), 'vpn.example.com:51820')
         self.assertEqual(peerharbor.endpoint('192.0.2.1:443'), '192.0.2.1:443')
         self.assertEqual(peerharbor.endpoint('[2001:db8::1]'), '[2001:db8::1]:51820')
+        self.assertEqual(peerharbor.endpoint('[::ffff:192.0.2.1]:443'), '[::ffff:192.0.2.1]:443')
 
     def test_endpoint_rejects_config_and_shell_injection(self):
         for value in ['vpn.example.com\nPostUp=evil', '$(id)', 'host;id', '-option', 'host:0', 'host:65536', 'https://host', '[not-ipv6]', 'host:５３']:
             with self.subTest(value=value), self.assertRaises(argparse.ArgumentTypeError):
                 peerharbor.endpoint(value)
+
+    def test_public_endpoints_reject_scopes_and_invalid_ipv4(self):
+        for value in ['[fe80::1%eth0]', '[fe80::1%eth0\nPostUp=bad]', '[fe80::1%$(id)]', '999.999.999.999', '192.0.2.999']:
+            with self.subTest(value=value), self.assertRaises(argparse.ArgumentTypeError):
+                peerharbor.endpoint(value)
+
+    def test_invalid_ipv6_cannot_reach_preflight_or_installation(self):
+        with patch('peerharbor.doctor') as doctor, patch('peerharbor.subprocess.run') as run:
+            with self.assertRaises(SystemExit) as raised:
+                self.run_main('install', 'vpn', '--endpoint', '[fe80::1%eth0\nPostUp=bad]')
+            self.assertEqual(raised.exception.code, 2)
+            doctor.assert_not_called()
+            run.assert_not_called()
 
     def test_plan_and_doctor_never_execute_commands(self):
         with patch('peerharbor.subprocess.run') as run:

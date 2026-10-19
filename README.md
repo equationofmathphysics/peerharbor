@@ -9,7 +9,7 @@ PeerHarbor combines a **self-hosted WireGuard VPN web manager** with an independ
 QR codes, manage peers and trusted ports, then use SSH and your browser to work
 on the desktop that is already running on your remote computer.
 
-[Install the VPN manager](#install-peerharbor) · [Start the remote desktop](#run-remotedesktop) ·
+[Quick start and AI installation](#quick-start-and-ai-installation) · [Start the remote desktop](#run-remotedesktop) ·
 [Tailscale, NoMachine and RDP](#tailscale-nomachine-and-rdp) · [中文说明](README.zh-CN.md)
 
 ![PeerHarbor WireGuard web dashboard showing VPN devices, peer controls and trusted ports](longtail/docs/longtail-dashboard.png)
@@ -34,7 +34,7 @@ where you want to manage the network and access an existing graphical session.
 
 ## Quick start and AI installation
 
-On an Ubuntu/Debian host with Python 3 and Git:
+On an Ubuntu/Debian host with Python 3.10+ and Git:
 
 ```bash
 git clone https://github.com/equationofmathphysics/peerharbor.git
@@ -91,8 +91,9 @@ an SSH tunnel. VPN membership does not replace SSH or desktop authentication.
 
 ## Tailscale, NoMachine and RDP
 
-If you found PeerHarbor while looking for a Tailscale alternative, a NoMachine
-alternative or Ubuntu remote desktop / RDP access, choose by the workflow you need:
+If you found PeerHarbor while looking for a Tailscale alternative,
+a NoMachine alternative or Ubuntu remote desktop / RDP access,
+choose by the workflow you need:
 
 | Your goal | How PeerHarbor fits | Current boundary |
 | --- | --- | --- |
