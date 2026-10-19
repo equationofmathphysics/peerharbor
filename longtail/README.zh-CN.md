@@ -1,14 +1,14 @@
-# Longtail
+# PeerHarbor
 
 [English](README.md) | 中文
 
-Longtail 是一个轻量级、全开源的 WireGuard 网页管理后台。你只要用一句话把服务器地址告诉 AI，让 AI 生成或执行安装命令，然后就可以在浏览器里管理 WireGuard 设备。
+PeerHarbor 是一个轻量级、全开源的 WireGuard 网页管理后台。你只要用一句话把服务器地址告诉 AI，让 AI 生成或执行安装命令，然后就可以在浏览器里管理 WireGuard 设备。
 
-![Longtail 网页管理后台](docs/longtail-dashboard.png)
+![PeerHarbor 网页管理后台](docs/longtail-dashboard.png)
 
 ## 特性
 
-- AI 一句配置：把服务器地址发给 AI，让 AI 帮你配置 Longtail。
+- AI 一句配置：把服务器地址发给 AI，让 AI 帮你配置 PeerHarbor。
 - AI 一键安装：通过 `deploy/bootstrap.sh` 自动完成主要安装流程。
 - 全开源、自托管。
 - 轻量级 Python/Flask 网页后台。
@@ -20,14 +20,14 @@ Longtail 是一个轻量级、全开源的 WireGuard 网页管理后台。你只
 代操作版：
 
 ```text
-请帮我安装并配置 Longtail；服务器 IP/域名是：____。
+请帮我安装并配置 PeerHarbor；服务器 IP/域名是：____。
 配置完成后，请给我 WireGuard 扫码二维码、网页后台地址和验证方法。
 ```
 
 安全版：
 
 ```text
-请给我生成安装 Longtail 的命令；服务器 IP/域名是：____。
+请给我生成安装 PeerHarbor 的命令；服务器 IP/域名是：____。
 不要连接我的服务器，只输出需要我复制执行的命令，提醒我放行 udp/51820，并说明怎么打开网页后台。
 ```
 
@@ -37,7 +37,7 @@ Longtail 是一个轻量级、全开源的 WireGuard 网页管理后台。你只
 sudo apt update
 sudo apt install -y git
 
-sudo git clone https://github.com/equationofmathphysics/longtail.git /opt/longtail
+sudo git clone https://github.com/equationofmathphysics/peerharbor.git /opt/longtail
 cd /opt/longtail/longtail
 
 sudo ./deploy/bootstrap.sh YOUR_SERVER_IP_OR_DOMAIN:51820 phone
