@@ -1,6 +1,6 @@
 # Third-party notices
 
-The repository license applies to project-authored code. Third-party code keeps
+The [MIT License](LICENSE) applies to project-authored code. Third-party code keeps
 its original copyright notices and licenses; it is not relicensed by this project.
 
 ## noVNC 1.6.0

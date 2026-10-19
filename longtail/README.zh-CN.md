@@ -10,7 +10,7 @@ PeerHarbor 是一个轻量级、自托管的 WireGuard 网页管理后台。你�
 
 - AI 一句配置：把服务器地址发给 AI，让 AI 帮你配置 PeerHarbor。
 - AI 一键安装：通过 `deploy/bootstrap.sh` 自动完成主要安装流程。
-- 源码公开，使用 [WH Covenant Public License](LICENSE)。
+- 使用 [MIT 许可证](LICENSE) 开源。
 - 轻量级 Python/Flask 网页后台。
 - 底层使用 WireGuard 协议，兼容标准 WireGuard 客户端。
 - 在网页里新增设备、扫码导入、下载 `.conf`、暂停 peer、授权管理员、控制可信端口。
@@ -111,4 +111,4 @@ NET_TOOLS_FIREWALL_ENABLED=1
 
 ## 许可证
 
-本项目基于 WH Covenant Public License 发布。使用、复制、修改、分发及其他处理行为均受 [LICENSE](LICENSE) 约束。
+本项目自有代码使用 [MIT 许可证](LICENSE)。

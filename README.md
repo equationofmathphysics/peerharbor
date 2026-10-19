@@ -180,6 +180,5 @@ Do not move or overwrite existing WireGuard configurations or keys.
 
 ## License
 
-Project-authored code retains the repository's existing
-[WH Covenant Public License](LICENSE). Third-party components retain their own
+Project-authored code is released under the [MIT License](LICENSE). Third-party components retain their own
 licenses; see [RemoteDesktop third-party notices](remotedesktop/THIRD_PARTY_NOTICES.md).

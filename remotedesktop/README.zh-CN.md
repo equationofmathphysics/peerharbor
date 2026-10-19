@@ -78,4 +78,4 @@ npm run check
 
 ## 许可证
 
-自有代码使用 [LICENSE](LICENSE)。noVNC 等第三方组件保留原许可证，见 [第三方声明](THIRD_PARTY_NOTICES.md)。
+自有代码使用 [MIT 许可证](LICENSE)。noVNC 等第三方组件保留原许可证，见 [第三方声明](THIRD_PARTY_NOTICES.md)。
