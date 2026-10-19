@@ -1,0 +1,15 @@
+# PeerHarbor
+
+> Self-hosted WireGuard VPN management and Ubuntu Xorg browser remote desktop.
+
+## Installation
+
+- [AI installation guide](https://github.com/equationofmathphysics/peerharbor/blob/main/docs/AI_INSTALL.md): prerequisites, JSON inspection, deployment commands, verification and connection handoff.
+- [English README](https://github.com/equationofmathphysics/peerharbor/blob/main/README.md): quick start, features and limitations.
+- [中文说明](https://github.com/equationofmathphysics/peerharbor/blob/main/README.zh-CN.md): 中文部署与功能说明。
+
+The local entry point is `python3 peerharbor.py <doctor|plan|install> <vpn|desktop>`.
+Doctor and plan support `--json` and make no system changes. Install invokes the
+existing installers and requires an appropriate target host and existing sudo
+access. Do not treat plan output as a successful deployment. The source and
+runtime directories retain legacy names for compatibility.

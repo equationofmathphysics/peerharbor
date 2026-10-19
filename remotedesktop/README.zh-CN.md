@@ -49,7 +49,7 @@ ssh -N -L 127.0.0.1:8765:127.0.0.1:8765 desktop-user@desktop-host
 
 SSH 使用已有系统账号；网页使用 RemoteDesktop 启动终端里的随机口令。网关严格检查 Host 和 Origin，隧道本地端口必须与网关端口相同。若使用 8766，请把启动端口及隧道两端端口一起修改。浏览器地址使用 `127.0.0.1`，不要替换成 `localhost`。
 
-网关只监听 loopback，x11vnc 不开放额外的 VNC TCP 端口。不要将 HTTP 网关直接公开到网络。Longtail 组网并不代替 SSH 和桌面网关认证。
+网关只监听 loopback，x11vnc 不开放额外的 VNC TCP 端口。不要将 HTTP 网关直接公开到网络。PeerHarbor 组网并不代替 SSH 和桌面网关认证。
 
 ## 会话与功能范围
 

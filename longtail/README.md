@@ -1,16 +1,16 @@
-# Longtail
+# PeerHarbor
 
 English | [中文](README.zh-CN.md)
 
-Longtail is a lightweight, fully open-source WireGuard web admin panel. Give an
+PeerHarbor is a lightweight, fully open-source WireGuard web admin panel. Give an
 AI assistant one sentence with your server address, let it prepare the install
 commands, then manage WireGuard devices from a browser.
 
-![Longtail web admin dashboard](docs/longtail-dashboard.png)
+![PeerHarbor web admin dashboard](docs/longtail-dashboard.png)
 
 ## Features
 
-- AI one-sentence setup: ask AI to configure Longtail for your server.
+- AI one-sentence setup: ask AI to configure PeerHarbor for your server.
 - AI-assisted one-command install with `deploy/bootstrap.sh`.
 - Fully open-source and self-hosted.
 - Lightweight Python/Flask web admin console.
@@ -23,14 +23,14 @@ commands, then manage WireGuard devices from a browser.
 Hands-on mode:
 
 ```text
-Please install and configure Longtail for me. My server IP/domain is: ____.
+Please install and configure PeerHarbor for me. My server IP/domain is: ____.
 After installation, give me the WireGuard QR code, the web admin URL, and the verification steps.
 ```
 
 Command-only mode:
 
 ```text
-Please generate the commands to install Longtail on my server. My server IP/domain is: ____.
+Please generate the commands to install PeerHarbor on my server. My server IP/domain is: ____.
 Do not connect to my server. Only output the commands I need to run, remind me to allow udp/51820, and include how to open the web admin console.
 ```
 
@@ -40,7 +40,7 @@ Do not connect to my server. Only output the commands I need to run, remind me t
 sudo apt update
 sudo apt install -y git
 
-sudo git clone https://github.com/equationofmathphysics/longtail.git /opt/longtail
+sudo git clone https://github.com/equationofmathphysics/peerharbor.git /opt/longtail
 cd /opt/longtail/longtail
 
 sudo ./deploy/bootstrap.sh YOUR_SERVER_IP_OR_DOMAIN:51820 phone

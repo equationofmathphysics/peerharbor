@@ -64,7 +64,7 @@ are checked exactly. For port 8766, change the startup port and both tunnel
 ports together. Use `127.0.0.1`, not the hostname `localhost`, in the URL.
 
 The gateway binds only to loopback; no public VNC listener is created. Do not
-expose this HTTP endpoint directly to the network. Longtail membership does not
+expose this HTTP endpoint directly to the network. PeerHarbor membership does not
 replace SSH authentication or the desktop gateway password.
 
 ## Session behavior and scope
