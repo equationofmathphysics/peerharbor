@@ -2,7 +2,13 @@
 
 English | [中文](README.zh-CN.md)
 
-Two self-hosted tools for connecting and operating computers on a private network:
+I built this project for my own LAN management and remote desktop needs. I wanted
+to avoid the cost of NoMachine's paid offerings, and Tailscale did not feel
+convenient for my workflow. That led to a self-hosted alternative I could deploy
+and manage myself, shared here for others with similar needs to use and improve.
+
+The repository contains two tools for connecting and operating computers on a
+private network:
 
 | Directory | Purpose | Documentation |
 | --- | --- | --- |
