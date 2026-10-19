@@ -1,0 +1,2 @@
+remotedesktop/vendor/** linguist-vendored -whitespace
+remotedesktop/frontend.js linguist-generated

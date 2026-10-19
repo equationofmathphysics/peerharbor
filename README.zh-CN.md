@@ -2,113 +2,76 @@
 
 [English](README.md) | 中文
 
-Longtail 是一个轻量级、全开源的 WireGuard 网页管理后台。你只要用一句话把服务器地址告诉 AI，让 AI 生成或执行安装命令，然后就可以在浏览器里管理 WireGuard 设备。
+这个仓库包含两个自托管工具，分别负责私有网络管理和桌面远程操作：
 
-![Longtail 网页管理后台](docs/longtail-dashboard.png)
+| 目录 | 用途 | 文档 |
+| --- | --- | --- |
+| [`longtail/`](longtail/) | 原有的 WireGuard 局域网与设备管理后台 | [中文](longtail/README.zh-CN.md) · [English](longtail/README.md) |
+| [`remotedesktop/`](remotedesktop/) | 在浏览器中查看和操作当前已登录的 Xorg 桌面 | [中文](remotedesktop/README.zh-CN.md) · [English](remotedesktop/README.md) |
 
-## 特性
+Longtail 负责组网，RemoteDesktop 负责桌面共享。两者独立运行，暂不共享登录或 Web 服务。RemoteDesktop 当前只监听本机，通过 SSH 隧道访问；隧道可使用局域网地址或 WireGuard 地址。
 
-- AI 一句配置：把服务器地址发给 AI，让 AI 帮你配置 Longtail。
-- AI 一键安装：通过 `deploy/bootstrap.sh` 自动完成主要安装流程。
-- 全开源、自托管。
-- 轻量级 Python/Flask 网页后台。
-- 底层使用 WireGuard 协议，兼容标准 WireGuard 客户端。
-- 在网页里新增设备、扫码导入、下载 `.conf`、暂停 peer、授权管理员、控制可信端口。
-
-## AI 配置提示词
-
-代操作版：
+## 目录结构
 
 ```text
-请帮我安装并配置 Longtail；服务器 IP/域名是：____。
-配置完成后，请给我 WireGuard 扫码二维码、网页后台地址和验证方法。
+longtail/
+├── longtail/       # 原 WireGuard 管理后台
+├── remotedesktop/  # 新 Xorg 远程桌面工具
+├── README.md
+└── LICENSE
 ```
 
-安全版：
-
-```text
-请给我生成安装 Longtail 的命令；服务器 IP/域名是：____。
-不要连接我的服务器，只输出需要我复制执行的命令，提醒我放行 udp/51820，并说明怎么打开网页后台。
-```
-
-## 安装
+## 安装 Longtail
 
 ```bash
 sudo apt update
 sudo apt install -y git
-
 sudo git clone https://github.com/equationofmathphysics/longtail.git /opt/longtail
-cd /opt/longtail
-
+cd /opt/longtail/longtail
 sudo ./deploy/bootstrap.sh YOUR_SERVER_IP_OR_DOMAIN:51820 phone
 ```
 
-`bootstrap.sh` 会安装依赖、创建 `/etc/longtail/longtail.env`、创建或复用
-`/etc/wireguard/wg0.conf`、启动 `wg-quick@wg0` 和 `longtail-web`，并输出第一个 WireGuard 二维码。
+安装器会配置 WireGuard 并管理 `longtail-web` 服务。服务器部署前请阅读 [Longtail 文档](longtail/README.zh-CN.md)。
 
-在云防火墙或安全组里放行：
+## 启动 RemoteDesktop
 
-```text
-udp/51820
-```
-
-## 网页后台
-
-手机扫码并打开 WireGuard 后，访问：
-
-```text
-http://10.66.0.1:51437/
-```
-
-如果在 VPN 外的电脑上管理远程服务器，先开 SSH 隧道：
+在 Ubuntu 已登录的 Xorg 图形桌面中，以当前桌面用户执行：
 
 ```bash
-ssh -L 51437:10.66.0.1:51437 user@your-server
+sudo apt install -y python3-venv x11vnc x11-utils
+cd /path/to/longtail/remotedesktop
+/usr/bin/python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+./start.sh
 ```
 
-然后打开：
+打开 `http://127.0.0.1:8765/`。账号为 `demo`，每次启动的随机访问口令显示在终端。前端已经构建，正常运行不需要 Node.js。
 
-```text
-http://127.0.0.1:51437/
-```
-
-## 验证
+从局域网或 WireGuard 网络中的另一台电脑访问：
 
 ```bash
-sudo systemctl status wg-quick@wg0 --no-pager
-sudo systemctl status longtail-web --no-pager
+ssh -N -L 127.0.0.1:8765:127.0.0.1:8765 desktop-user@desktop-host
 ```
 
-## 配置
+将用户名和地址换成被控电脑的实际值。保持隧道运行，在访问端浏览器打开 `http://127.0.0.1:8765/`。完整说明见 [RemoteDesktop 文档](remotedesktop/README.zh-CN.md)。
 
-主配置文件：
+## 已安装 Longtail 的升级
 
-```text
-/etc/longtail/longtail.env
+原应用从仓库根目录移到了 `longtail/` 子目录。`/etc/longtail`、`/etc/wireguard` 和 `/var/lib/longtail` 的数据位置不变。旧安装在拉取后，需要更新虚拟环境和 systemd 服务路径：
+
+```bash
+cd /opt/longtail
+sudo git pull --ff-only
+cd longtail
+sudo /usr/bin/python3 -m venv .venv
+sudo .venv/bin/python -m pip install -r requirements.txt
+sudo install -m 644 deploy/longtail-web.service /etc/systemd/system/longtail-web.service
+sudo systemctl daemon-reload
+sudo systemctl restart longtail-web
 ```
 
-常用配置：
-
-```env
-NET_TOOLS_SERVER_ENDPOINT=YOUR_SERVER_IP_OR_DOMAIN:51820
-NET_TOOLS_WG_CONF=/etc/wireguard/wg0.conf
-NET_TOOLS_WG_CIDR=10.66.0.0/24
-NET_TOOLS_SERVER_VPN_IP=10.66.0.1
-NET_TOOLS_CLIENT_ALLOWED_IPS=10.66.0.0/24
-NET_TOOLS_ADMIN_IPS=127.0.0.1,::1,10.66.0.1
-NET_TOOLS_BIND_HOST=10.66.0.1
-NET_TOOLS_FIREWALL_ENABLED=1
-```
-
-完整示例在 `deploy/longtail.env.example` 和 `deploy/examples/`。
-
-## 安全
-
-- 不要提交生成的客户端配置、二维码图片或 `/var/lib/longtail`，里面可能有私钥。
-- 不要把网页后台直接暴露到公网。
-- 默认只需要公网放行 `udp/51820`。
-- 管理权限建议只给本机和可信 WireGuard 设备。
+上述命令假设仓库位于 `/opt/longtail`。若安装在其他目录，请先调整服务文件中的 `WorkingDirectory` 和 `ExecStart`。不要移动或覆盖已有的 WireGuard 配置与密钥。
 
 ## 许可证
 
-本项目基于 WH Covenant Public License 发布。使用、复制、修改、分发及其他处理行为均受 [LICENSE](LICENSE) 约束。
+本项目自有代码沿用仓库现有的 [WH Covenant Public License](LICENSE)。第三方组件保留各自许可证，详见 [RemoteDesktop 第三方声明](remotedesktop/THIRD_PARTY_NOTICES.md)。

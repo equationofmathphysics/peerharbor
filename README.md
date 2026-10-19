@@ -2,119 +2,90 @@
 
 English | [中文](README.zh-CN.md)
 
-Longtail is a lightweight, fully open-source WireGuard web admin panel. Give an
-AI assistant one sentence with your server address, let it prepare the install
-commands, then manage WireGuard devices from a browser.
+Two self-hosted tools for connecting and operating computers on a private network:
 
-![Longtail web admin dashboard](docs/longtail-dashboard.png)
+| Directory | Purpose | Documentation |
+| --- | --- | --- |
+| [`longtail/`](longtail/) | WireGuard network and peer management through a web admin panel | [English](longtail/README.md) · [中文](longtail/README.zh-CN.md) |
+| [`remotedesktop/`](remotedesktop/) | Browser-based viewing and control of an already logged-in Xorg desktop | [English](remotedesktop/README.md) · [中文](remotedesktop/README.zh-CN.md) |
 
-## Features
+Longtail establishes and manages the WireGuard network. RemoteDesktop shares the
+current user's desktop. The two applications run independently; they do not
+share authentication or a web process. RemoteDesktop currently listens on
+localhost and is accessed through an SSH tunnel, including over a WireGuard IP.
 
-- AI one-sentence setup: ask AI to configure Longtail for your server.
-- AI-assisted one-command install with `deploy/bootstrap.sh`.
-- Fully open-source and self-hosted.
-- Lightweight Python/Flask web admin console.
-- WireGuard protocol underneath, compatible with standard WireGuard clients.
-- Add devices, scan QR codes, download `.conf` files, pause peers, grant admin
-  access, and control trusted ports from the web UI.
-
-## AI Setup Prompt
-
-Hands-on mode:
+## Repository layout
 
 ```text
-Please install and configure Longtail for me. My server IP/domain is: ____.
-After installation, give me the WireGuard QR code, the web admin URL, and the verification steps.
+longtail/
+├── longtail/       # Original WireGuard administration application
+├── remotedesktop/  # Xorg desktop sharing application
+├── README.md
+└── LICENSE
 ```
 
-Command-only mode:
-
-```text
-Please generate the commands to install Longtail on my server. My server IP/domain is: ____.
-Do not connect to my server. Only output the commands I need to run, remind me to allow udp/51820, and include how to open the web admin console.
-```
-
-## Install
+## Install Longtail
 
 ```bash
 sudo apt update
 sudo apt install -y git
-
 sudo git clone https://github.com/equationofmathphysics/longtail.git /opt/longtail
-cd /opt/longtail
-
+cd /opt/longtail/longtail
 sudo ./deploy/bootstrap.sh YOUR_SERVER_IP_OR_DOMAIN:51820 phone
 ```
 
-`bootstrap.sh` installs dependencies, creates `/etc/longtail/longtail.env`,
-creates or reuses `/etc/wireguard/wg0.conf`, starts `wg-quick@wg0` and
-`longtail-web`, and prints the first WireGuard QR code.
+The installer manages WireGuard and the `longtail-web` service. Read the
+[Longtail documentation](longtail/README.md) before deploying to a server.
 
-Allow the public WireGuard port in your cloud firewall or security group:
+## Run RemoteDesktop
 
-```text
-udp/51820
-```
-
-## Web Admin
-
-After scanning the QR code and turning on WireGuard, open:
-
-```text
-http://10.66.0.1:51437/
-```
-
-From a computer outside the VPN, use an SSH tunnel:
+Run this as the desktop user, inside an active Ubuntu Xorg graphical session:
 
 ```bash
-ssh -L 51437:10.66.0.1:51437 user@your-server
+sudo apt install -y python3-venv x11vnc x11-utils
+cd /path/to/longtail/remotedesktop
+/usr/bin/python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+./start.sh
 ```
 
-Then open:
+Open `http://127.0.0.1:8765/`. The username is `demo`; a random access password is
+printed in the terminal each time the service starts. The included frontend is
+already built, so Node.js is only needed when changing frontend code.
 
-```text
-http://127.0.0.1:51437/
-```
-
-## Verify
+For another computer on the LAN or WireGuard network:
 
 ```bash
-sudo systemctl status wg-quick@wg0 --no-pager
-sudo systemctl status longtail-web --no-pager
+ssh -N -L 127.0.0.1:8765:127.0.0.1:8765 desktop-user@desktop-host
 ```
 
-## Configuration
+Keep the tunnel running and open `http://127.0.0.1:8765/` on that computer.
+See [RemoteDesktop usage and limitations](remotedesktop/README.md).
 
-Main config file:
+## Existing Longtail installations
 
-```text
-/etc/longtail/longtail.env
+The original application moved from the repository root into `longtail/`.
+Existing `/etc/longtail`, `/etc/wireguard`, and `/var/lib/longtail` data paths
+have not changed. An installation using the old root-level virtualenv/service
+paths needs a one-time service-path update after pulling this change:
+
+```bash
+cd /opt/longtail
+sudo git pull --ff-only
+cd longtail
+sudo /usr/bin/python3 -m venv .venv
+sudo .venv/bin/python -m pip install -r requirements.txt
+sudo install -m 644 deploy/longtail-web.service /etc/systemd/system/longtail-web.service
+sudo systemctl daemon-reload
+sudo systemctl restart longtail-web
 ```
 
-Common settings:
-
-```env
-NET_TOOLS_SERVER_ENDPOINT=YOUR_SERVER_IP_OR_DOMAIN:51820
-NET_TOOLS_WG_CONF=/etc/wireguard/wg0.conf
-NET_TOOLS_WG_CIDR=10.66.0.0/24
-NET_TOOLS_SERVER_VPN_IP=10.66.0.1
-NET_TOOLS_CLIENT_ALLOWED_IPS=10.66.0.0/24
-NET_TOOLS_ADMIN_IPS=127.0.0.1,::1,10.66.0.1
-NET_TOOLS_BIND_HOST=10.66.0.1
-NET_TOOLS_FIREWALL_ENABLED=1
-```
-
-Full examples are in `deploy/longtail.env.example` and `deploy/examples/`.
-
-## Security
-
-- Do not commit generated client configs, QR-code images, or
-  `/var/lib/longtail`; they may contain private keys.
-- Do not expose the web admin console directly to the public internet.
-- Only `udp/51820` needs to be public by default.
-- Keep admin access limited to localhost and trusted WireGuard devices.
+These paths assume the checkout is `/opt/longtail`. For a different checkout,
+adjust `WorkingDirectory` and `ExecStart` in the service before installing it.
+Do not move or overwrite existing WireGuard configurations or keys.
 
 ## License
 
-This project is released under the WH Covenant Public License. Use, copying,
-modification, distribution, and other dealings are subject to [LICENSE](LICENSE).
+Project-authored code retains the repository's existing
+[WH Covenant Public License](LICENSE). Third-party components retain their own
+licenses; see [RemoteDesktop third-party notices](remotedesktop/THIRD_PARTY_NOTICES.md).

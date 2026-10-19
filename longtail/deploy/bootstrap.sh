@@ -45,7 +45,7 @@ if command -v systemctl >/dev/null 2>&1 && [[ -d /run/systemd/system ]]; then
     SERVICE_PROJECT_DIR="${PROJECT_DIR//\\/\\\\}"
     SERVICE_PROJECT_DIR="${SERVICE_PROJECT_DIR//&/\\&}"
     SERVICE_PROJECT_DIR="${SERVICE_PROJECT_DIR//|/\\|}"
-    sed "s|/opt/longtail|${SERVICE_PROJECT_DIR}|g" deploy/longtail-web.service > "${SERVICE_TMP}"
+    sed "s|/opt/longtail/longtail|${SERVICE_PROJECT_DIR}|g" deploy/longtail-web.service > "${SERVICE_TMP}"
     install -m 644 "${SERVICE_TMP}" /etc/systemd/system/longtail-web.service
     rm -f "${SERVICE_TMP}"
     systemctl daemon-reload

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>远程桌面控制台</title>
+  <style>
+    :root { font: 16px/1.5 system-ui, sans-serif; color: #e6edf8; background: #101725; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px 20px; }
+    main { max-width: 1440px; margin: auto; }
+    h1 { margin: 0 0 5px; font-size: clamp(24px, 4vw, 34px); }
+    .eyebrow { margin: 0 0 8px; color: #77e3cf; font-size: 13px; }
+    .subtitle { color: #a9bad2; margin: 0 0 20px; }
+    .panel { border: 1px solid #34435c; border-radius: 12px; background: #192236; padding: 18px; margin-top: 16px; }
+    form, .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+    label { display: grid; gap: 5px; font-size: 14px; color: #c6d2e4; }
+    input:not([type=checkbox]) { padding: 10px 12px; background: #0d1524; border: 1px solid #566986; border-radius: 7px; color: white; font: inherit; max-width: 100%; }
+    button { border: 1px solid #667b9c; border-radius: 7px; padding: 10px 16px; background: #25334b; color: #f3f7ff; font: 600 14px system-ui, sans-serif; cursor: pointer; }
+    button.primary { background: #77e3cf; color: #10251f; border-color: #77e3cf; }
+    button:disabled { opacity: .4; cursor: default; }
+    :focus-visible { outline: 3px solid #ffcf86; outline-offset: 3px; }
+    .controls { align-items: center; }
+    .toggle { display: flex; align-items: center; gap: 7px; }
+    #status { flex-basis: 100%; margin: 3px 0 0; min-height: 24px; }
+    #screen { width: 100%; height: min(70vh, 900px); background: #080d17; overflow: hidden; border-radius: 8px; }
+    #screen canvas { cursor: none !important; }
+    #screen-shell { margin-top: 16px; }
+    #screen-shell:fullscreen { margin: 0; background: #080d17; }
+    #screen-shell:fullscreen #screen { height: 100vh; border-radius: 0; }
+    #screen-shell:fullscreen .hint { display: none; }
+    #exit-fullscreen { display: none; }
+    #screen-shell:fullscreen #exit-fullscreen { display: block; position: absolute; top: 12px; right: 12px; z-index: 10; }
+    [hidden] { display: none !important; }
+    .hint, footer { color: #a9bad2; font-size: 13px; }
+    footer { margin-top: 18px; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow" id="backend">桌面共享</p>
+  <h1>远程桌面控制台</h1>
+  <p class="subtitle" id="description">登录后连接桌面，访问口令显示在服务启动终端中。</p>
+  <section id="login-panel" class="panel" aria-label="登录控制台">
+    <form id="login-form">
+      <label for="username">账号<input id="username" name="username" value="demo" autocomplete="username" required></label>
+      <label for="password">访问口令<input id="password" name="password" type="password" autocomplete="current-password" required></label>
+      <button id="login" class="primary" type="submit">登录</button>
+    </form>
+    <p class="hint">使用本次启动生成的口令。远程访问请通过 SSH 隧道连接。</p>
+  </section>
+  <section class="panel" aria-label="桌面连接">
+    <div class="controls">
+      <button id="connect" class="primary" type="button" disabled>连接桌面</button>
+      <button id="disconnect" type="button" disabled>断开</button>
+      <button id="fullscreen" type="button" disabled>全屏</button>
+      <label class="toggle"><input id="view-only" type="checkbox">仅查看</label>
+      <button id="logout" type="button" disabled>退出登录</button>
+      <p id="status" role="status" aria-live="polite" aria-atomic="true">请先登录。</p>
+    </div>
+    <div id="screen-shell" hidden>
+      <button id="exit-fullscreen" type="button">退出全屏</button>
+      <div id="screen" aria-label="远程桌面画面"></div>
+      <p class="hint">点击画面后输入。全屏按 Esc 返回。剪贴板、文件传输及远程调整分辨率未启用。</p>
+    </div>
+  </section>
+  <footer>当前会话桌面共享 · 同时允许一个控制连接</footer>
+</main>
+<script src="/frontend.js" defer></script>
+</body>
+</html>

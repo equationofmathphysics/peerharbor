@@ -1,0 +1,12 @@
+{
+  "name": "longtail-remotedesktop",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "node build_frontend.cjs",
+    "check": "node --check frontend.js"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12"
+  }
+}
