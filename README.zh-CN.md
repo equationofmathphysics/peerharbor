@@ -1,27 +1,56 @@
-# Longtail
+# Longtail — WireGuard 组网与 Ubuntu 远程桌面
 
 [English](README.md) | 中文
 
-这是一个为自用搭建的局域网管理与远程桌面项目。起因很简单：我希望避开 NoMachine 付费方案带来的成本，同时觉得 Tailscale 在自己的使用场景下不够顺手，所以做了一套可以自己部署、自己管理的替代工具。现在将它公开，方便有相似需求的人使用和改进。
+**把设备连起来，在浏览器里打开远端正在使用的 Ubuntu 桌面。**
 
-仓库包含两个工具，分别负责私有网络管理和桌面远程操作：
+Longtail 包含一个**自托管 WireGuard VPN 网页管理后台**和一个独立的 **Ubuntu/Linux Xorg 浏览器远程桌面工具**。扫码添加组网设备、管理节点和可信端口，再通过 SSH 隧道与浏览器操作远端电脑上已经打开的桌面。
 
-| 目录 | 用途 | 文档 |
+[安装组网后台](#安装-longtail) · [启动远程桌面](#启动-remotedesktop) · [与 Tailscale、NoMachine、RDP 的关系](#与-tailscalenomachinerdp-的关系)
+
+![Longtail WireGuard 管理界面：VPN 设备、节点操作与可信端口](longtail/docs/longtail-dashboard.png)
+
+*图为 WireGuard 管理后台。实际管理地址和端口以安装输出为准。*
+
+## 能用它做什么
+
+- **在网页里管理私有网络：**添加设备、扫描 WireGuard 二维码、下载配置、暂停或恢复节点、管理后台访问权限。
+- **连接自己的电脑：**使用标准 WireGuard 客户端和自己管理的服务器入口，为 SSH、RDP 等服务配置可信端口。
+- **共享屏幕上正在使用的桌面：**通过 noVNC 与 x11vnc 查看、控制当前 Ubuntu Xorg 会话，支持仅查看和全屏。
+- **按需组合：**只用组网后台、在现有局域网内单独使用 RemoteDesktop，或通过 WireGuard 地址建立 SSH 隧道访问桌面。
+
+适合家庭实验室、个人工作站或少量 Linux 设备：自己管理网络，并远程操作已有的图形桌面。
+
+## 两个工具，一条远程访问流程
+
+| 工具 | 用途 | 文档 |
 | --- | --- | --- |
-| [`longtail/`](longtail/) | 原有的 WireGuard 局域网与设备管理后台 | [中文](longtail/README.zh-CN.md) · [English](longtail/README.md) |
-| [`remotedesktop/`](remotedesktop/) | 在浏览器中查看和操作当前已登录的 Xorg 桌面 | [中文](remotedesktop/README.zh-CN.md) · [English](remotedesktop/README.md) |
-
-Longtail 负责组网，RemoteDesktop 负责桌面共享。两者独立运行，暂不共享登录或 Web 服务。RemoteDesktop 当前只监听本机，通过 SSH 隧道访问；隧道可使用局域网地址或 WireGuard 地址。
-
-## 目录结构
+| [Longtail 组网管理](longtail/) | 在网页后台管理 WireGuard 网络、节点和可信端口 | [中文](longtail/README.zh-CN.md) · [English](longtail/README.md) |
+| [Longtail RemoteDesktop](remotedesktop/) | 在浏览器中查看和操作当前已登录的 Xorg 桌面 | [中文](remotedesktop/README.zh-CN.md) · [English](remotedesktop/README.md) |
 
 ```text
-longtail/
-├── longtail/       # 原 WireGuard 管理后台
-├── remotedesktop/  # 新 Xorg 远程桌面工具
-├── README.md
-└── LICENSE
+访问端电脑 ── WireGuard 网络（已有局域网时可省略）── Ubuntu 主机
+访问端浏览器 ── 本地 SSH 隧道 ── RemoteDesktop 网关 ── 已有 Xorg 桌面
 ```
+
+两者独立运行，各自处理认证与 Web 服务。RemoteDesktop 只监听本机，从其他电脑访问时需要 SSH 隧道；加入 VPN 并不代替 SSH 登录和桌面网关认证。
+
+## 与 Tailscale、NoMachine、RDP 的关系
+
+如果你在寻找 Tailscale 替代方案、NoMachine 替代方案、Ubuntu 远程桌面或 RDP 内网访问工具，可以按实际需求判断：
+
+| 你的需求 | Longtail 提供什么 | 当前边界 |
+| --- | --- | --- |
+| 自托管组网，替代自己的 Tailscale 使用流程 | 自己部署 WireGuard 服务器，在网页里管理标准 WireGuard 节点。 | 使用自己的 WireGuard 配置，不实现 Tailscale 控制平面、客户端注册或自动 Mesh/中继系统；需要可达的服务器入口。 |
+| 考虑 NoMachine，希望访问已有的 Ubuntu 桌面 | 通过 SSH 隧道，在浏览器里用 noVNC/x11vnc 操作当前 Xorg 会话。 | 不实现 NoMachine/NX 协议，不承诺性能或功能对等。 |
+| 通过私有网络连接已有的 RDP 服务 | 使用 WireGuard 网络承载连接，配置所需可信端口。 | RDP 客户端和服务端需要另行准备；自带浏览器桌面使用 VNC/RFB，不是 RDP。 |
+| 在浏览器中共享 Linux 桌面 | 使用随附的 RemoteDesktop，已在 Ubuntu 24.04 Xorg 环境验证。 | 需要已经登录且活动的图形会话；当前不支持 Wayland 和开机登录界面。 |
+
+RemoteDesktop 同时只允许一个控制连接，当前不包含剪贴板、文件传输、远程修改分辨率、无人值守开机登录和直接公网 HTTPS/WSS 部署。完整条件见 [环境要求与功能范围](remotedesktop/README.zh-CN.md#环境要求)。
+
+## 为什么做 Longtail
+
+这是一个为自用搭建的局域网管理与远程桌面项目。起因很简单：我希望避开 NoMachine 付费方案带来的成本，同时觉得 Tailscale 在自己的使用场景下不够顺手，所以做了一套可以自己部署、自己管理的工具。现在将它公开，方便有相似需求的人使用和改进。
 
 ## 安装 Longtail
 
